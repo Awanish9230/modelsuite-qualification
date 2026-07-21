@@ -1,5 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
+import { Sun, Moon } from 'lucide-react';
 
 /* ── Clean SVG line-art icons (no emojis, no AI icons) ── */
 const IconDashboard = () => (
@@ -48,12 +50,12 @@ const navItems = [
 
 const Sidebar = () => {
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const navigate  = useNavigate();
   const location  = useLocation();
 
   return (
-    <aside className="fixed inset-y-0 left-0 w-[240px] flex flex-col z-50"
-      style={{ background: '#0D0D0D' }}>
+    <aside className="fixed inset-y-0 left-0 w-[240px] flex flex-col z-50 bg-bg-surface transition-colors duration-300 border-r border-border">
 
       {/* Brand */}
       <div className="flex items-center justify-center px-5 py-6">
@@ -91,20 +93,27 @@ const Sidebar = () => {
               {user?.name?.[0]?.toUpperCase() ?? 'A'}
             </div>
             <div className="min-w-0">
-              <p className="text-[13px] font-semibold truncate max-w-[110px]"
-                style={{ color: '#E5E2E1', fontFamily: 'Inter, sans-serif' }}>
+              <p className="text-[13px] font-semibold truncate max-w-[110px] text-text-primary font-sans">
                 {user?.name}
               </p>
-              <p className="text-[11px]" style={{ color: '#4B5563' }}>Admin</p>
+              <p className="text-[11px] text-text-muted">Admin</p>
             </div>
           </div>
 
-          <button
-            onClick={() => { logout(); navigate('/login'); }}
-            title="Sign out"
-            className="logout-btn">
-            <IconLogout />
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={toggleTheme}
+              title="Toggle Theme"
+              className="logout-btn">
+              {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
+            <button
+              onClick={() => { logout(); navigate('/login'); }}
+              title="Sign out"
+              className="logout-btn">
+              <IconLogout />
+            </button>
+          </div>
         </div>
       </div>
     </aside>

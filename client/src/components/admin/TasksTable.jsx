@@ -1,4 +1,5 @@
 import { deleteTask } from '../../api/tasks';
+import { getTaskDueStatus } from '../../utils/dateUtils';
 
 /* ── SVG Action Icons ── */
 const IconEdit = () => (
@@ -54,9 +55,9 @@ const TasksTable = ({ tasks, onEdit, onRefresh }) => {
 
   if (tasks.length === 0) {
     return (
-      <div className="py-20 text-center" style={{ color: 'rgba(255,255,255,0.3)', fontSize: '14px' }}>
+      <div className="py-20 text-center text-text-faint text-[14px]">
         <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2"
-          style={{ margin: '0 auto 12px', opacity: 0.3 }} strokeLinecap="round" strokeLinejoin="round">
+          className="mx-auto mb-3 opacity-30" strokeLinecap="round" strokeLinejoin="round">
           <rect x="3" y="3" width="18" height="18" rx="3"/>
           <path d="M9 12h6M9 8h6M9 16h4"/>
         </svg>
@@ -86,12 +87,11 @@ const TasksTable = ({ tasks, onEdit, onRefresh }) => {
 
               {/* Title + description */}
               <td className="table-td" style={{ maxWidth: '260px' }}>
-                <span className="block font-semibold truncate"
-                  style={{ color: '#E5E2E1', fontFamily: 'Inter, sans-serif', marginBottom: '2px' }}>
+                <span className="block font-semibold truncate text-text-primary font-sans mb-[2px]">
                   {task.title || '—'}
                 </span>
                 {task.description && (
-                  <span className="block truncate" style={{ color: '#4B5563', fontSize: '12px', maxWidth: '240px' }}>
+                  <span className="block truncate text-text-muted text-[12px] max-w-[240px]">
                     {task.description}
                   </span>
                 )}
@@ -118,20 +118,32 @@ const TasksTable = ({ tasks, onEdit, onRefresh }) => {
                       }}>
                       {task.assignedTo.name?.[0]?.toUpperCase()}
                     </div>
-                    <span style={{ color: '#E5E2E1' }}>{task.assignedTo.name}</span>
+                    <span className="text-text-primary">{task.assignedTo.name}</span>
                   </div>
                 ) : (
-                  <span style={{ color: '#4B5563', fontSize: '13px' }}>Unassigned</span>
+                  <span className="text-text-muted text-[13px]">Unassigned</span>
                 )}
               </td>
 
               {/* Due date */}
-              <td className="table-td" style={{ color: '#6B7280', whiteSpace: 'nowrap' }}>
-                {fmtDate(task.dueDate)}
+              <td className="table-td text-text-muted whitespace-nowrap">
+                <div className="flex items-center gap-2">
+                  <span>{fmtDate(task.dueDate)}</span>
+                  {getTaskDueStatus(task.dueDate, task.status) === 'overdue' && (
+                    <span className="inline-block px-1.5 py-[2px] rounded text-[10px] font-bold badge-overdue uppercase tracking-wider">
+                      Overdue
+                    </span>
+                  )}
+                  {getTaskDueStatus(task.dueDate, task.status) === 'due-soon' && (
+                    <span className="inline-block px-1.5 py-[2px] rounded text-[10px] font-bold badge-due-soon uppercase tracking-wider">
+                      Due Soon
+                    </span>
+                  )}
+                </div>
               </td>
 
               {/* Created */}
-              <td className="table-td" style={{ color: '#4B5563', whiteSpace: 'nowrap', fontSize: '12.5px' }}>
+              <td className="table-td text-text-muted whitespace-nowrap text-[12.5px]">
                 {fmtDate(task.createdAt)}
               </td>
 

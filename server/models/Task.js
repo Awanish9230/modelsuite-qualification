@@ -1,4 +1,4 @@
-﻿const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 const taskSchema = new mongoose.Schema(
   {
     title: {
@@ -25,5 +25,15 @@ const taskSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// Middleware to cascade delete submissions related to the task to prevent orphaned records (Issue #5)
+taskSchema.pre('findOneAndDelete', async function (next) {
+  const taskId = this.getQuery()['_id'];
+  if (taskId) {
+    const Submission = mongoose.model('Submission');
+    await Submission.deleteMany({ taskId: taskId });
+  }
+  next();
+});
 
 module.exports = mongoose.model('Task', taskSchema);

@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { submitTask } from '../../api/submissions';
 
 const SubmitTaskModal = ({ task, onClose, onSubmitted }) => {
@@ -73,7 +73,7 @@ const SubmitTaskModal = ({ task, onClose, onSubmitted }) => {
             <label className="text-[11px] font-semibold uppercase tracking-[0.5px] text-text-muted">Notes</label>
             <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={4}
               placeholder="Describe what you've done, include any relevant links..."
-              className="w-full bg-bg-input border border-border rounded-lg px-3.5 py-2.5 text-sm text-text-primary outline-none placeholder:text-[#4e4a6e] focus:border-primary focus:ring-[3px] focus:ring-primary/15 transition-all font-sans resize-y" />
+              className="w-full bg-bg-input border border-border rounded-lg px-3.5 py-2.5 text-sm text-text-primary outline-none placeholder:text-text-muted focus:border-primary focus:ring-[3px] focus:ring-primary/15 transition-all font-sans resize-y" />
           </div>
 
           

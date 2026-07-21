@@ -1,4 +1,4 @@
-﻿const Task = require('../models/Task');
+const Task = require('../models/Task');
 
 // @desc  Get all tasks
 // @route GET /api/tasks
@@ -83,7 +83,7 @@ const deleteTask = async (req, res) => {
   try {
     const task = await Task.findById(req.params.id);
     if (!task) return res.status(404).json({ message: 'Task not found' });
-    // — orphaned Submission documents remain in DB after task deletion
+    // Submissions associated with this task are cascade-deleted via Mongoose middleware in Task.js
     await Task.findByIdAndDelete(req.params.id);
 
     res.json({ message: 'Task deleted' });

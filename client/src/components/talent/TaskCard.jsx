@@ -1,4 +1,5 @@
-﻿import { claimTask } from '../../api/talent';
+import { claimTask } from '../../api/talent';
+import { getTaskDueStatus } from '../../utils/dateUtils';
 
 const STATUS_CLASS = {
   Open:      'status-badge-Open',
@@ -40,9 +41,21 @@ const TaskCard = ({ task, showClaimButton = false, onClaimed }) => {
       {/* Meta row */}
       <div className="flex items-center justify-between flex-wrap gap-2 mt-auto">
         
-        <span className="text-[12px] text-text-faint">
-          {task.dueDate ? `Due: ${task.dueDate}` : 'No due date'}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-[12px] text-text-faint">
+            {task.dueDate ? `Due: ${task.dueDate}` : 'No due date'}
+          </span>
+          {getTaskDueStatus(task.dueDate, task.status) === 'overdue' && (
+            <span className="inline-block px-1.5 py-[2px] rounded text-[9px] font-bold badge-overdue uppercase tracking-wider">
+              Overdue
+            </span>
+          )}
+          {getTaskDueStatus(task.dueDate, task.status) === 'due-soon' && (
+            <span className="inline-block px-1.5 py-[2px] rounded text-[9px] font-bold badge-due-soon uppercase tracking-wider">
+              Due Soon
+            </span>
+          )}
+        </div>
         {task.createdBy?.name && (
           <span className="text-[12px] text-text-faint">By {task.createdBy.name}</span>
         )}

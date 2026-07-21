@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import SubmitTaskModal from './SubmitTaskModal';
+import { getTaskDueStatus } from '../../utils/dateUtils';
 
 /* ── Status badge classes ── */
 const STATUS_CLASS = {
@@ -40,16 +41,9 @@ const MyTasksList = ({ tasks, onRefresh }) => {
 
   if (!tasks || tasks.length === 0) {
     return (
-      <div className="py-12 px-6 text-center rounded-xl"
-        style={{
-          background: 'rgba(255,255,255,0.015)',
-          border: '1px dashed rgba(255,255,255,0.1)',
-          color: 'rgba(255,255,255,0.3)',
-          fontSize: '13px',
-          fontFamily: 'Inter, sans-serif',
-        }}>
+      <div className="py-12 px-6 text-center rounded-xl bg-bg-input border border-dashed border-border text-text-faint text-[13px] font-sans">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2"
-          style={{ margin: '0 auto 10px', opacity: 0.3 }} strokeLinecap="round" strokeLinejoin="round">
+          className="mx-auto mb-2.5 opacity-30" strokeLinecap="round" strokeLinejoin="round">
           <rect x="3" y="3" width="18" height="18" rx="3"/>
           <path d="M9 12l2 2 4-4"/>
         </svg>
@@ -68,15 +62,26 @@ const MyTasksList = ({ tasks, onRefresh }) => {
 
             {/* Task info */}
             <div className="flex-1 min-w-0">
-              <p className="font-semibold truncate mb-0.5"
-                style={{ fontSize: '13.5px', color: '#E5E2E1', fontFamily: 'Inter, sans-serif' }}>
+              <p className="font-semibold truncate mb-0.5 text-[13.5px] text-text-primary font-sans">
                 {task.title || 'Untitled Task'}
               </p>
               {fmtDate(task.dueDate) && (
-                <p className="flex items-center gap-1.5 text-[11.5px]" style={{ color: '#4B5563' }}>
-                  <IconCalendar />
-                  Due {fmtDate(task.dueDate)}
-                </p>
+                <div className="flex items-center gap-1.5">
+                  <p className="flex items-center gap-1.5 text-[11.5px] text-text-muted">
+                    <IconCalendar />
+                    Due {fmtDate(task.dueDate)}
+                  </p>
+                  {getTaskDueStatus(task.dueDate, task.status) === 'overdue' && (
+                    <span className="inline-block px-1.5 py-[1px] rounded text-[9px] font-bold badge-overdue uppercase tracking-wider">
+                      Overdue
+                    </span>
+                  )}
+                  {getTaskDueStatus(task.dueDate, task.status) === 'due-soon' && (
+                    <span className="inline-block px-1.5 py-[1px] rounded text-[9px] font-bold badge-due-soon uppercase tracking-wider">
+                      Due Soon
+                    </span>
+                  )}
+                </div>
               )}
             </div>
 
@@ -85,22 +90,7 @@ const MyTasksList = ({ tasks, onRefresh }) => {
               {(task.status === 'Claimed' || task.status === 'Submitted') && (
                 <button
                   onClick={() => setSubmitTarget(task)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-semibold cursor-pointer border transition-all"
-                  style={{
-                    background: 'rgba(59,130,246,0.08)',
-                    color: '#60A5FA',
-                    borderColor: 'rgba(59,130,246,0.25)',
-                    fontFamily: 'Inter, sans-serif',
-                    transition: 'background 0.15s, border-color 0.15s',
-                  }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.background = 'rgba(59,130,246,0.16)';
-                    e.currentTarget.style.borderColor = 'rgba(59,130,246,0.4)';
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.background = 'rgba(59,130,246,0.08)';
-                    e.currentTarget.style.borderColor = 'rgba(59,130,246,0.25)';
-                  }}>
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-semibold cursor-pointer border transition-all bg-primary/10 text-primary border-primary/30 font-sans hover:bg-primary/20 hover:border-primary/40">
                   <IconUpload />
                   {task.status === 'Submitted' ? 'Re-submit' : 'Submit'}
                 </button>
