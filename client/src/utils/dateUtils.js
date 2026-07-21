@@ -7,12 +7,24 @@ export const getTaskDueStatus = (dueDateStr, status) => {
   if (['Submitted', 'Approved', 'Rejected'].includes(status)) return null;
   if (!dueDateStr) return null;
 
-  const dueDate = new Date(dueDateStr);
-  if (isNaN(dueDate.getTime())) return null;
+  let targetDate;
+  if (typeof dueDateStr === 'string' && !dueDateStr.includes('T')) {
+    // Treat date-only strings (YYYY-MM-DD) as local end of day
+    const parts = dueDateStr.split('-');
+    if (parts.length === 3) {
+      targetDate = new Date(parts[0], parts[1] - 1, parts[2], 23, 59, 59, 999);
+    }
+  }
+
+  if (!targetDate) {
+    targetDate = new Date(dueDateStr);
+  }
+
+  if (isNaN(targetDate.getTime())) return null;
 
   const now = new Date();
   
-  const timeDiff = dueDate.getTime() - now.getTime();
+  const timeDiff = targetDate.getTime() - now.getTime();
   const hoursDiff = timeDiff / (1000 * 60 * 60);
 
   if (hoursDiff < 0) {
